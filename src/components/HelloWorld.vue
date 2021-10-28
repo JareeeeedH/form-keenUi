@@ -1,93 +1,125 @@
 <template>
-    <section class="page page--ui-alert">
-        <h2 class="page__title">UiAlert</h2>
-
-        <p>UiAlert shows an inline alert message to the user. Supported types are <code>info</code>, <code>success</code>, <code>warning</code> and <code>error</code>.</p>
-
-        <p>UiAlert supports keyboard navigation, can contain links and can be dismissed. The alert icon can be changed or removed.</p>
-
-        <h3 class="page__section-title">
-            Examples <a href="https://github.com/JosephusPaye/Keen-UI/blob/master/docs-src/pages/UiAlert.vue" target="_blank" rel="noopener">View Source</a>
-        </h3>
+    <section class="page page--ui-textbox">
 
         <div class="page__examples">
-            <ui-alert @dismiss="showAlert1 = false" v-show="showAlert1">
-                Hi everybody! This is the default alert.
-            </ui-alert>
 
-            <ui-alert @dismiss="showAlert2 = false" type="success" v-show="showAlert2">
-                Okilly dokilly, your account was updated successfully.
-            </ui-alert>
 
-            <ui-alert @dismiss="showAlert3 = false" type="warning" v-show="showAlert3">
-                Ay caramba! Alerts can also contain HTML. <a href="https://google.com" target="_blank" rel="noopener">Click here</a> for Google.com.
-            </ui-alert>
+            <h4 class="page__demo-title">With validation: required</h4>
 
-            <ui-alert @dismiss="showAlert4 = false" type="error" v-show="showAlert4">
-                D'oh! Something went wrong and we cannot process your request at this time. Try again later.
-            </ui-alert>
+            <ui-textbox
+                autocomplete="off"
+                error="This field is required"
+                help="If you have multiple names, enter the one you prefer"
+                label="Name"
+                placeholder="Enter your name"
+                required
 
-            <ui-alert @dismiss="showAlert5 = false" type="warning" v-show="showAlert5">
-                <ui-icon slot="icon">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12.984 14.016V9h-1.97v5.016h1.97zm0 3.984v-2.016h-1.97V18h1.97zm2.672-14.016c.75 0 1.36.61 1.36 1.36V20.67c0 .75-.61 1.314-1.36 1.314H8.343c-.75 0-1.36-.563-1.36-1.313V5.344c0-.75.61-1.36 1.36-1.36h1.64V2.016h4.032v1.97h1.64z"/></svg>
-                </ui-icon>
+                :invalid="textbox10Touched && textbox10.length === 0"
+                @touch="textbox10Touched = true"
 
-                This alert has a custom icon.
-            </ui-alert>
+                v-model="textbox10"
+            ></ui-textbox>
 
-            <ui-alert @dismiss="showAlert6 = false" v-show="showAlert6">
-                This is a multi-line alert. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolor suscipit facilis explicabo officiis consectetur, ipsam voluptate excepturi quas quae. Dolorem. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quis, autem.
-            </ui-alert>
+            <h4 class="page__demo-title">With validation and counter (max length)</h4>
 
-            <ui-alert @dismiss="showAlert7 = false" remove-icon v-show="showAlert7">
-                The icon for this alert has been removed.
-            </ui-alert>
+            <ui-textbox
+                error="The username may not be more than 16 characters"
+                help="Pick a unique username not more than 16 characters"
+                icon="person"
+                label="Username"
+                placeholder="Enter a username"
 
-            <ui-alert @dismiss="showAlert8 = false" type="warning" disable-animation v-show="showAlert8">
-                Animations for this alert are disabled.
-            </ui-alert>
+                :maxlength="16"
+                :invalid="textbox11.length > 16"
 
-            <ui-alert :dismissible="false">This alert is not dismissible.</ui-alert>
+                v-model="textbox11"
+            ></ui-textbox>
 
-            <ui-alert :dismissible="false" remove-icon>
-                This alert has no icon is not dismissible.
-            </ui-alert>
+            <h4 class="page__demo-title">Type: number, min: 0, max: 99</h4>
 
-            <ui-button @click="resetAlerts">Reset Alerts</ui-button>
+            <ui-textbox
+                help="The ideal number of cats a person should own, minimum 0, maximum 99"
+                label="Number of Cats"
+                placeholder="Enter number of cats"
+                type="number"
+
+                :min="0"
+                :max="99"
+
+                v-model.number="textbox12"
+            ></ui-textbox>
+
+            <h4 class="page__demo-title">Multi-line (textarea)</h4>
+
+            <ui-textbox
+                enforce-maxlength
+                help="Maximum 256 characters"
+                label="Short bio"
+                placeholder="Introduce yourself in a few words"
+
+                :multi-line="true"
+                :maxlength="256"
+
+                v-model="textbox13"
+            ></ui-textbox>
+
+            <h4 class="page__demo-title">Multi-line (textarea) with floating label</h4>
+
+            <ui-textbox
+                enforce-maxlength
+                floating-label
+                help="Maximum 256 characters"
+                label="Short bio"
+                placeholder="Introduce yourself in a few words"
+
+                :multi-line="true"
+                :maxlength="256"
+
+                v-model="textbox14"
+            ></ui-textbox>
+
+            <h4 class="page__demo-title">Multi-line (textarea) with icon</h4>
+
+            <ui-textbox
+                enforce-maxlength
+                help="Maximum 256 characters"
+                icon="face"
+                label="Short bio"
+                placeholder="Introduce yourself in a few words"
+
+                :multi-line="true"
+                :maxlength="256"
+
+                v-model="textbox15"
+            ></ui-textbox>
         </div>
+
 
     </section>
 </template>
 
 <script>
 
-
-
 export default {
     data() {
         return {
-            showAlert1: true,
-            showAlert2: true,
-            showAlert3: true,
-            showAlert4: true,
-            showAlert5: true,
-            showAlert6: true,
-            showAlert7: true,
-            showAlert8: true
+            textbox1: null,
+            textbox2: '',
+            textbox3: '',
+            textbox4: 'John Doe',
+            textbox5: 'Jane Doe',
+            textbox6: '',
+            textbox7: '',
+            textbox8: '',
+            textbox9: '',
+            textbox10: '',
+            textbox10Touched: false,
+            textbox11: '',
+            textbox12: 0,
+            textbox13: '',
+            textbox14: '',
+            textbox15: 'My name is Jane Doe...'
         };
-    },
-
-    methods: {
-        resetAlerts() {
-            this.showAlert1 = true;
-            this.showAlert2 = true;
-            this.showAlert3 = true;
-            this.showAlert4 = true;
-            this.showAlert5 = true;
-            this.showAlert6 = true;
-            this.showAlert7 = true;
-            this.showAlert8 = true;
-        }
     },
 
 };
