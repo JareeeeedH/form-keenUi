@@ -1,45 +1,55 @@
 <template>
     <section class="page page--ui-textbox">
 
-        <form action='/' method="post" onsubmit="return validate()">
 
+        <form>
 
             <ui-textbox
                 icon="person_add"
-                autocomplete="off"
-                error="4 - 20碼"
-                help="4 - 20碼"
+                :error="accountErrorMessage"
+                help="4-20位英文小寫、數字。"
                 label="帳號"
                 placeholder="輸入帳號"
                 required
+                floatingLabel
 
-                :invalid="textAcTouched && textAc.length === 0"
-                @touch="textAcTouched = true"
-
-                v-model="textAc"
-
-                enforce-maxlength
+                :invalid="invalidAccount"
+                :value="textAc"
+                @input='accountValidate'
                 :maxlength="20"
-
+                :minlength="4"
             ></ui-textbox>
 
             <ui-textbox
                 icon="password"
-                autocomplete="off"
-                error="6 - 12碼"
-                help="6 - 12碼"
+                :error="passwordErrorMessage"
+                help="6-12位英文小寫、數字。"
                 label="密碼"
                 placeholder="輸入密碼"
                 required
+                floatingLabel
 
-                :invalid="textPwTouched && textPw.length === 0"
-                @touch="textPwTouched = true"
-
-                v-model="textPw"
-
-                enforce-maxlength
+                :invalid="invalidPassword"
+                :value="textPassword"
+                @input="passwordValidate"
                 :maxlength="12"
+                :minlength="6"
             ></ui-textbox>
+<!-- 
+            <ui-textbox
+                icon="password"
+                :error="passwordErrorMessage"
+                help="6-12位英文小寫、數字。"
+                label="密碼"
+                placeholder="輸入密碼"
+                required
+                floatingLabel
+
+                :invalid="invalidPassword"
+                :value="textPassword"
+                @input="passwordValidate"
+                :maxlength="12"
+            ></ui-textbox> -->
 
             <ui-textbox
                 error="名稱必填，不可空白與特殊符號。"
@@ -71,17 +81,17 @@
                 placeholder="Enter your email address"
                 type="email"
                 v-model="emailAddress"
+
+
             ></ui-textbox>
-
-            <!-- <button type="submit"> submit!</button> -->
-
 
 
             <ui-button
                 color="primary"
-                @click="submit"
+                @click.prevent='submit'
                 >送出
             </ui-button>
+
 
             
         </form>
@@ -92,15 +102,19 @@
 
 <script>
 
+
 export default {
     data() {
         return {
 
             textAc:'',
-            textAcTouched: false,
+            accountErrorMessage:'字數有誤，請輸入4-20位元',
+            invalidAccount: null,
 
-            textPw:'',
-            textPwTouched: false,
+
+            textPassword:'',
+            passwordErrorMessage:'字數有誤，請輸入6-12位元',
+            invalidPassword: null,
            
             userName:'', 
 
@@ -114,13 +128,64 @@ export default {
 
     methods:{
         submit(){
-            console.log('btn')
+            if(this.invalidAccount !== false || this.invalidPassword!== false){
+                this.invalidAccount = true;
+                this.invalidPassword = true;
+                return
+            }
+            
+
+            alert('ok!')
         },
 
-        validate(){
-            alert('t');
-            return false
+        accountValidate(newValue){
+
+        this.textAc = newValue;
+
+        // 驗證字數
+        if(newValue.length < 4 || newValue.length > 20){
+            this.accountErrorMessage = '請輸入4-20位英文小寫或數字'
+            this.invalidAccount = true;
+            return;
         }
+
+        // 驗證輸入內容
+        var isText = /^[a-z0-9]+$/;
+        let contentValidate = isText.test(newValue);
+
+        if(contentValidate){
+            this.invalidAccount = false;
+            return;
+        }
+
+        this.accountErrorMessage = '內容有誤，僅可輸入英文小寫或數字'
+        this.invalidAccount = true;
+
+
+        },
+
+        passwordValidate(newValue){
+            this.textPassword = newValue
+
+            // 驗證位數
+            if(this.textPassword.length < 6 || this.textPassword.length > 12){
+                this.passwordErrorMessage = '字數有誤，請輸入6-12位元',
+                this.invalidPassword = true;
+                return
+            }
+            // 驗證輸入內容
+            var isText = /^[a-z0-9]+$/;
+            let contentValidate = isText.test(newValue);
+
+            if(contentValidate){
+                this.invalidPassword = false;
+                return;
+            }
+
+            this.invalidPassword = true;
+            this.passwordErrorMessage = '內容有誤，僅可輸入英文小寫或數字'
+
+        },
     },
 
 };
