@@ -14,16 +14,3 @@ export default {
   }
 }
 </script>
-
-<style lang="scss">
-
-*,
-*::before,
-*::after {
-    box-sizing: border-box;
-}
-
-html {
-    font-size: 100%;
-}
-</style>

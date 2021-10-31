@@ -1,9 +1,6 @@
 <template>
-    <section class="page page--ui-textbox">
-
-
-        <form>
-
+    <section class="wrapper">
+        <form class='form'>
             <ui-textbox
                 icon="person_add"
                 :error="accountErrorMessage"
@@ -13,9 +10,10 @@
                 required
                 floatingLabel
 
-                :invalid="invalidAccount"
-                :value="textAc"
+                :invalid="isValidAccount===false"
+                :value="accountText"
                 @input='accountValidate'
+
                 :maxlength="20"
                 :minlength="4"
             ></ui-textbox>
@@ -29,8 +27,8 @@
                 required
                 floatingLabel
 
-                :invalid="invalidPassword"
-                :value="textPassword"
+                :invalid="isValidPassword===false"
+                :value="passwordText"
                 @input="passwordValidate"
                 :maxlength="12"
                 :minlength="6"
@@ -102,19 +100,22 @@
 
 <script>
 
+import { mapState } from 'vuex'
+import { mapActions } from 'vuex'
+
 
 export default {
     data() {
         return {
 
-            textAc:'',
-            accountErrorMessage:'字數有誤，請輸入4-20位元',
-            invalidAccount: null,
+            // accountText:'',
+            // accountErrorMessage:'字數有誤，請輸入4-20位元',
+            // isValidAccount: null,
 
 
-            textPassword:'',
-            passwordErrorMessage:'字數有誤，請輸入6-12位元',
-            invalidPassword: null,
+            // textPassword:'',
+            // passwordErrorMessage:'字數有誤，請輸入6-12位元',
+            // invalidPassword: null,
            
             userName:'', 
 
@@ -127,66 +128,111 @@ export default {
     },
 
     methods:{
-        submit(){
-            if(this.invalidAccount !== false || this.invalidPassword!== false){
-                this.invalidAccount = true;
-                this.invalidPassword = true;
-                return
-            }
-            
+        ...mapActions([
+        'setAccountText', 'setAccountValidate', 'setAccountErrorMessage',
+        'setPasswordText','setPasswordtValidate','setPasswordErrorMessage']),
 
-            alert('ok!')
+        submit(){
+            if(this.isValidAccount !== true){
+                this.setAccountValidate(false);
+            }
+            // if(this.isValidPassword !== true){
+            //     this.$store.commit('SET_PASSWORD_VALIDATE',false);
+            //     return
+            // }
+        
+            alert('ok!');
+
         },
 
         accountValidate(newValue){
 
-        this.textAc = newValue;
+        this.$store.dispatch('setAccountText', newValue);
 
         // 驗證字數
         if(newValue.length < 4 || newValue.length > 20){
-            this.accountErrorMessage = '請輸入4-20位英文小寫或數字'
-            this.invalidAccount = true;
-            return;
+            this.setAccountValidate(false);
+            this.setAccountErrorMessage('請輸入4-20位英文小寫或數字');
+            return; 
         }
 
         // 驗證輸入內容
-        var isText = /^[a-z0-9]+$/;
-        let contentValidate = isText.test(newValue);
+        let accountRegex = /^[a-z0-9]+$/;
+        let contentValidate = accountRegex.test(newValue);
 
-        if(contentValidate){
-            this.invalidAccount = false;
+        if(contentValidate === false){
+            this.$store.dispatch('setAccountValidate', false);
+            this.$store.dispatch('setAccountErrorMessage', '內容有誤，僅可輸入英文小寫或數字');
             return;
         }
 
-        this.accountErrorMessage = '內容有誤，僅可輸入英文小寫或數字'
-        this.invalidAccount = true;
-
+        this.$store.dispatch('setAccountValidate', true);
 
         },
 
         passwordValidate(newValue){
-            this.textPassword = newValue
+            this.setPasswordText(newValue);
 
             // 驗證位數
-            if(this.textPassword.length < 6 || this.textPassword.length > 12){
-                this.passwordErrorMessage = '字數有誤，請輸入6-12位元',
-                this.invalidPassword = true;
+            if(this.passwordText.length < 6 || this.passwordText.length > 12){
+                this.setPasswordErrorMessage('字數有誤，請輸入6-12位元');
+                this.setPasswordtValidate(false);
                 return
             }
             // 驗證輸入內容
-            var isText = /^[a-z0-9]+$/;
+            let isText = /^[a-z0-9]+$/;
             let contentValidate = isText.test(newValue);
 
-            if(contentValidate){
-                this.invalidPassword = false;
+            if(contentValidate === false){
+                this.setPasswordtValidate(false);
+                this.setPasswordErrorMessage('內容有誤，僅可輸入英文小寫或數字');
                 return;
             }
 
-            this.invalidPassword = true;
-            this.passwordErrorMessage = '內容有誤，僅可輸入英文小寫或數字'
+            this.setPasswordtValidate(true);
 
         },
     },
 
+    computed:{
+        ...mapState(['accountContent','passwordContent']),
+
+        // 帳號
+        accountText(){
+            return this.accountContent.accountText
+        },
+        accountErrorMessage(){
+            return this.accountContent.accountErrorMessage
+        },
+        isValidAccount(){
+            return this.accountContent.isValidAccount
+        },
+        // 密碼
+        passwordText(){
+            return this.passwordContent.passwordText
+        },
+        passwordErrorMessage(){
+            return this.passwordContent.passwordErrorMessage
+        },
+        isValidPassword(){
+            return this.passwordContent.isValidPassword
+        }
+    }
+
 };
 </script>
+
+
+<style lang="scss">
+
+.wrapper{
+    width: 100%;
+    height: 98vh;
+    background: #eeeeee;
+}
+.form{
+    width: 50vw;
+    margin: auto;
+}
+
+</style>
