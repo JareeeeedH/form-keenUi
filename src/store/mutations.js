@@ -2,7 +2,7 @@ let mutations = {
   // account
   SET_ACCOUNT_TEXT(state, newAccountText){ 
     state.accountContent.accountText = newAccountText;
-    // vue.ser()?
+    // vue.set()?
   },
   SET_ACCOUNT_VALIDATE(state, validResult){
     if(validResult){
@@ -14,6 +14,7 @@ let mutations = {
   SET_ACCOUT_ERROR_MESSAGE(state, message){
     state.accountContent.accountErrorMessage = message;
   },
+
   // password
   SET_PASSWORD_TEXT(state, newPasswordText){ 
     state.passwordContent.passwordText = newPasswordText
@@ -27,7 +28,24 @@ let mutations = {
   },
   SET_PASSWORD_ERROR_MESSAGE(state, message){
     state.passwordContent.passwordErrorMessage = message;
-  }
+  },
+
+  // password confirmation
+  SET_CONFIRM_PASSWORD_TEXT(state, newPasswordText){ 
+    state.confirmPasswordContent.confirmText = newPasswordText;
+  },
+
+  SET_CONFIRM_PASSWORD_VALIDATE(state, validResult){
+    state.confirmPasswordContent.isValidConfirm = validResult;
+  },
+
+  // userName
+  SET_USER_NAME(state, name){
+    state.nameContent.name = name;
+  },
+  SET_NAME_VALIDATE(state, validResult){
+    state.nameContent.isValidName = validResult
+  },
 
 
 }

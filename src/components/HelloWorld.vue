@@ -33,34 +33,34 @@
                 :maxlength="12"
                 :minlength="6"
             ></ui-textbox>
-<!-- 
+
             <ui-textbox
                 icon="password"
-                :error="passwordErrorMessage"
-                help="6-12位英文小寫、數字。"
-                label="密碼"
-                placeholder="輸入密碼"
+                :error="confirmPasswordContent.cconfirmErrorMessage"
+                :invalid="isValidConfirmPassword===false"
+                help="再次輸入密碼"
+                label="密碼確認"
+                placeholder="再次輸入密碼"
                 required
                 floatingLabel
 
-                :invalid="invalidPassword"
-                :value="textPassword"
-                @input="passwordValidate"
-                :maxlength="12"
-            ></ui-textbox> -->
+                :value="confirmPassword"
+                @input="confirmPasswordValidate"
+
+            ></ui-textbox>
 
             <ui-textbox
-                error="名稱必填，不可空白與特殊符號。"
-                help="輸入名稱，不可空白與特殊符號。"
+                error="必填，不可數字、空白與特殊符號。"
+                help="輸入姓名，不可數字、空白與特殊符號。"
                 icon="person"
-                label="Username"
-                placeholder="輸入名稱"
+                label="姓名"
+                placeholder="輸入姓名"
                 required
+                floatingLabel
 
-                :maxlength="16"
-                :invalid="userName.length > 16"
-
-                v-model="userName"
+                :invalid="isValidName===false"
+                :value='userName'
+                @input='nameValidate'
             ></ui-textbox>
 
             <ui-select
@@ -107,66 +107,59 @@ import { mapActions } from 'vuex'
 export default {
     data() {
         return {
-
-            // accountText:'',
-            // accountErrorMessage:'字數有誤，請輸入4-20位元',
-            // isValidAccount: null,
-
-
-            // textPassword:'',
-            // passwordErrorMessage:'字數有誤，請輸入6-12位元',
-            // invalidPassword: null,
-           
-            userName:'', 
-
             gender:'',
             genderOptions:['男','女','/'],
-
             emailAddress:'',
-
         };
     },
 
     methods:{
         ...mapActions([
         'setAccountText', 'setAccountValidate', 'setAccountErrorMessage',
-        'setPasswordText','setPasswordtValidate','setPasswordErrorMessage']),
+        'setPasswordText','setPasswordtValidate','setPasswordErrorMessage',
+        'setConfirmPassword','setConfirmPasswordValidate', 
+        'setUserName','setNameValidate']),
 
         submit(){
             if(this.isValidAccount !== true){
                 this.setAccountValidate(false);
             }
-            // if(this.isValidPassword !== true){
-            //     this.$store.commit('SET_PASSWORD_VALIDATE',false);
-            //     return
-            // }
+            if(this.isValidPassword !== true){
+                this.setPasswordtValidate(false)
+            }
+
+            if(this.passwordText !== this.confirmPassword){
+                this.setConfirmPasswordValidate(false);
+            }
+            else{
+                this.setConfirmPasswordValidate(true);
+            }
         
-            alert('ok!');
+            // alert('ok!');
 
         },
 
         accountValidate(newValue){
+            this.$store.dispatch('setAccountText', newValue);
 
-        this.$store.dispatch('setAccountText', newValue);
+            // 驗證字數
+            if(newValue.length < 4 || newValue.length > 20){
+                this.setAccountValidate(false);
+                this.setAccountErrorMessage('請輸入4-20位英文小寫或數字');
+                return; 
+            }
 
-        // 驗證字數
-        if(newValue.length < 4 || newValue.length > 20){
-            this.setAccountValidate(false);
-            this.setAccountErrorMessage('請輸入4-20位英文小寫或數字');
-            return; 
-        }
+            // 驗證輸入內容
+            let accountRegex = /^[a-z0-9]+$/;
+            let contentValidate = accountRegex.test(newValue);
 
-        // 驗證輸入內容
-        let accountRegex = /^[a-z0-9]+$/;
-        let contentValidate = accountRegex.test(newValue);
+            if(contentValidate === false){
+                this.setAccountValidate(false);
+                this.setAccountErrorMessage('內容有誤，僅可輸入英文小寫或數字');
+                return;
+            }
 
-        if(contentValidate === false){
-            this.$store.dispatch('setAccountValidate', false);
-            this.$store.dispatch('setAccountErrorMessage', '內容有誤，僅可輸入英文小寫或數字');
-            return;
-        }
-
-        this.$store.dispatch('setAccountValidate', true);
+            this.$store.dispatch('setAccountValidate', true);
 
         },
 
@@ -192,10 +185,29 @@ export default {
             this.setPasswordtValidate(true);
 
         },
+
+        confirmPasswordValidate(newValue){
+            this.setConfirmPassword(newValue)
+        },
+
+        nameValidate(newValue){
+            this.setUserName(newValue);
+
+            let isName = /^[\u4E00-\u9FA5A-Za-z]+$/g;
+            let contentValidate = isName.test(newValue);
+
+            if(contentValidate === false){
+                this.setNameValidate(false)
+                return;
+            }
+
+            this.setNameValidate(true)
+
+        },
     },
 
     computed:{
-        ...mapState(['accountContent','passwordContent']),
+        ...mapState(['accountContent','passwordContent','confirmPasswordContent','nameContent']),
 
         // 帳號
         accountText(){
@@ -216,7 +228,23 @@ export default {
         },
         isValidPassword(){
             return this.passwordContent.isValidPassword
+        },
+        // 密碼確認
+        confirmPassword(){
+            return this.confirmPasswordContent.confirmText
+        },
+        isValidConfirmPassword(){
+            return this.confirmPasswordContent.isValidConfirm
+        },
+
+        // 名稱
+        userName(){
+            return this.nameContent.name;
+        },
+        isValidName(){
+            return this.nameContent.isValidName;
         }
+
     }
 
 };
