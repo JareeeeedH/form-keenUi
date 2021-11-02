@@ -4,10 +4,7 @@ import store from './store'
 
 import KeenUI from 'keen-ui';
 import 'keen-ui/dist/keen-ui.css';
-
 Vue.use(KeenUI);
-
-
 
 Vue.config.productionTip = false
 

@@ -2,7 +2,6 @@ let mutations = {
   // account
   SET_ACCOUNT_TEXT(state, newAccountText){ 
     state.accountContent.accountText = newAccountText;
-    // vue.set()?
   },
   SET_ACCOUNT_VALIDATE(state, validResult){
     if(validResult){
@@ -11,13 +10,13 @@ let mutations = {
     }
     state.accountContent.isValidAccount = false;
   },
-  SET_ACCOUT_ERROR_MESSAGE(state, message){
+  SET_ACCOUNT_ERROR_MESSAGE(state, message){
     state.accountContent.accountErrorMessage = message;
   },
 
   // password
   SET_PASSWORD_TEXT(state, newPasswordText){ 
-    state.passwordContent.passwordText = newPasswordText
+    state.passwordContent.passwordText = newPasswordText;
   },
   SET_PASSWORD_VALIDATE(state, validResult){
     if(validResult){
@@ -44,7 +43,24 @@ let mutations = {
     state.nameContent.name = name;
   },
   SET_NAME_VALIDATE(state, validResult){
-    state.nameContent.isValidName = validResult
+    state.nameContent.isValidName = validResult;
+  },
+
+  // gender
+  SET_GENDER(state, gender){
+    state.gender = gender;
+  },
+
+  // email
+  SET_EMAIL(state, emailAddress){
+    state.emailContent.emailAddress = emailAddress;
+  },
+  SET_EMAIL_VALIDATE(state, validResult){
+    state.emailContent.isValidEmailAddress = validResult;
+  },
+  
+  TAGGLE_INFORMATION(state, result){
+    state.showMemberInfo = result;
   },
 
 
