@@ -44,6 +44,8 @@
         :invalid="confirmPasswordContent.isValidConfirm === false"
         :value="confirmPasswordContent.confirmText"
         @input="confirmPasswordValidate"
+        :maxlength="12"
+        :minlength="6"
       ></ui-textbox>
 
       <ui-textbox
@@ -129,14 +131,9 @@ export default {
       if (this.passwordContent.isValidPassword !== true) {
         this.setPasswordtValidate(false);
       }
-      // password confirmation
-      if (
-        this.passwordContent.passwordText !==
-        this.confirmPasswordContent.confirmText
-      ) {
+      // confirm
+      if (this.confirmPasswordContent.isValidConfirm !== true) {
         this.setConfirmPasswordValidate(false);
-      } else {
-        this.setConfirmPasswordValidate(true);
       }
       // name
       if (this.nameContent.isValidName !== true) {
@@ -147,7 +144,14 @@ export default {
         this.setValidEmail(false);
         return;
       }
-
+      
+      // password confirmation
+      if (this.passwordContent.passwordText !==this.confirmPasswordContent.confirmText) {
+        this.setConfirmPasswordValidate(false);
+      } else {
+        this.setConfirmPasswordValidate(true);
+      }
+      
       // 所有欄位true, 表單驗證符合。
       let validataListValues = Object.values(this.validateList);
       let finalResult = validataListValues.every((eachResult) => {
@@ -199,11 +203,40 @@ export default {
         this.setPasswordErrorMessage("內容有誤，僅可輸入英文小寫或數字");
         return;
       }
+
       this.setPasswordtValidate(true);
+
+      // 已符合後，再次修改，再次判斷  
+      if(newValue !== this.confirmPasswordContent.confirmText){
+        this.setConfirmPasswordValidate(false);
+        return
+      }
+      this.setConfirmPasswordValidate(true);
+
+
     },
 
     confirmPasswordValidate(newValue) {
+
+      // 尚未輸入第一次密碼，return
+      if(this.passwordContent.passwordText.length === 0){
+        this.setPasswordtValidate(false);
+        this.setConfirmPasswordValidate(false);
+        this.setConfirmPassword('');
+        return
+      }
+
       this.setConfirmPassword(newValue);
+
+      // 確認結果
+      let result = newValue === this.passwordContent.passwordText;
+      if(result === false){
+        this.setConfirmPasswordValidate(false);
+        return
+      }
+
+      this.setConfirmPasswordValidate(true);
+
     },
 
     nameValidate(newValue) {
